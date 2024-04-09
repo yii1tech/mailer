@@ -1,0 +1,40 @@
+{
+    "name": "yii1tech/mailer",
+    "description": "Provides integration of Symfony Mailer in the Yii1 application",
+    "keywords": ["yii1", "mailer", "mail", "email", "template", "symfony"],
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/yii1tech/mailer/issues",
+        "wiki": "https://github.com/yii1tech/mailer/wiki",
+        "source": "https://github.com/yii1tech/mailer"
+    },
+    "authors": [
+        {
+            "name": "Paul Klimov",
+            "email": "klimov.paul@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "yiisoft/yii": "~1.1.0",
+        "symfony/mailer": ">=4.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0 || ^7.0 || ^8.0 || ^9.3 || ^10.0.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "yii1tech\\mailer\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "yii1tech\\mailer\\test\\": "tests"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
