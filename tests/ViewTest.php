@@ -2,6 +2,7 @@
 
 namespace yii1tech\mailer\test;
 
+use Yii;
 use yii1tech\mailer\View;
 
 class ViewTest extends TestCase
@@ -53,5 +54,23 @@ class ViewTest extends TestCase
         $viewRenderer = $view->getViewRenderer();
 
         $this->assertTrue($viewRenderer instanceof \CPradoViewRenderer);
+    }
+
+    public function testRestoreOrigins(): void
+    {
+        $view = new View();
+        $view->layout = 'default-layout';
+
+        $content = $view->render('switch', [
+            'name' => 'John Doe',
+        ], 'ru');
+
+        $this->assertStringContainsString('Name = John Doe', $content);
+        $this->assertStringContainsString('Locale = ru', $content);
+        $this->assertStringContainsString('<!--Header-->', $content);
+        $this->assertStringContainsString('<!--Footer-->', $content);
+
+        $this->assertSame('default-layout', $view->layout);
+        $this->assertSame('en_us', Yii::app()->getLanguage());
     }
 }

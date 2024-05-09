@@ -8,6 +8,7 @@ use Symfony\Component\Mailer\Mailer as SymfonyMailer;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\RawMessage;
+use Yii;
 use yii1tech\mailer\transport\ArrayTransport;
 
 /**
@@ -53,6 +54,13 @@ class Mailer extends CApplicationComponent
      */
     private $_transport;
 
+    /**
+     * @var \yii1tech\mailer\View|array view instance or its array configuration.
+     */
+    private $_view = [
+        'class' => View::class,
+    ];
+
     public function send(RawMessage $message, ?Envelope $envelope = null): void
     {
         foreach ($this->defaultHeaders as $name => $value) {
@@ -60,6 +68,10 @@ class Mailer extends CApplicationComponent
                 $value = (array) $value;
             }
             $message->getHeaders()->addHeader($name, $value);
+        }
+
+        if ($message instanceof TemplatedEmailContract) {
+            $message = $this->render($message);
         }
 
         $this->getSymfonyMailer()->send($message, $envelope);
@@ -123,6 +135,12 @@ class Mailer extends CApplicationComponent
         return $this->_transport;
     }
 
+    /**
+     * Creates new transport instance from configuration.
+     *
+     * @param callable|string $config transport class name or factory callback.
+     * @return \Symfony\Component\Mailer\Transport\TransportInterface transport instance.
+     */
     protected function createTransport($config): TransportInterface
     {
         if (is_callable($config)) {
@@ -134,5 +152,57 @@ class Mailer extends CApplicationComponent
         }
 
         throw new \LogicException('Transport configuration should be either a factory callback or a string class name.');
+    }
+
+    /**
+     * @return \yii1tech\mailer\View view instance.
+     */
+    public function getView()
+    {
+        if (!is_object($this->_view)) {
+            $this->_view = Yii::createComponent($this->_view);
+        }
+
+        return $this->_view;
+    }
+
+    /**
+     * @param \yii1tech\mailer\View|array|string $view view instance or its configuration.
+     * @return static self reference.
+     */
+    public function setView($view): self
+    {
+        $this->_view = $view;
+
+        return $this;
+    }
+
+    /**
+     * Renders the email message, populating its body parts from the templates.
+     *
+     * @param \Symfony\Component\Mime\RawMessage|\Symfony\Component\Mime\Email|\yii1tech\mailer\TemplatedEmailContract $message raw message.
+     * @return \Symfony\Component\Mime\RawMessage rendered message.
+     */
+    protected function render(RawMessage $message): RawMessage
+    {
+        if ($message->isRendered()) {
+            return $message;
+        }
+
+        if (($textTemplate = $message->getTextTemplate()) !== null) {
+            $text = $this->getView()->render($textTemplate, $message->getContext(), $message->getLocale());
+
+            $message->text($text);
+        }
+
+        if (($htmlTemplate = $message->getHtmlTemplate()) !== null) {
+            $html = $this->getView()->render($htmlTemplate, $message->getContext(), $message->getLocale());
+
+            $message->html($html);
+        }
+
+        $message->markAsRendered();
+
+        return $message;
     }
 }

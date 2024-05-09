@@ -154,14 +154,20 @@ class View extends \CBaseController
      *
      * @param string $view name of the view to be rendered. See {@see getViewFile()} for details about how the view script is resolved.
      * @param array|null $data data to be extracted into PHP variables and made available to the view script.
+     * @param string|null $locale locale to be used while template rendering.
      * @return string the rendering result.
      */
-    public function render(string $view, ?array $data = null): string
+    public function render(string $view, ?array $data = null, ?string $locale = null): string
     {
         $originalLayout = $this->layout;
+        $originalLocale = Yii::app()->getLanguage();
         $obInitialLevel = ob_get_level();
 
         try {
+            if ($locale !== null) {
+                Yii::app()->setLanguage($locale);
+            }
+
             $content = $this->renderPartial($view, $data, true);
 
             if (!empty($this->layout)) {
@@ -175,11 +181,13 @@ class View extends \CBaseController
             }
 
             $this->layout = $originalLayout;
+            Yii::app()->setLanguage($originalLocale);
 
             throw $e;
         }
 
         $this->layout = $originalLayout;
+        Yii::app()->setLanguage($originalLocale);
 
         return $content;
     }
@@ -204,10 +212,7 @@ class View extends \CBaseController
         $viewFile = $this->getViewFile($view);
 
         if ($viewFile === false) {
-            throw new \InvalidArgumentException(Yii::t('yii', '{controller} cannot find the requested view "{view}".', [
-                '{controller}' => get_class($this),
-                '{view}' => $view,
-            ]));
+            throw new \InvalidArgumentException(get_class($this) . ' cannot find the requested view "' . $view . '".');
         }
 
         return $this->renderFile($viewFile, $data, $return);

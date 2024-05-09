@@ -20,11 +20,11 @@ class ArrayTransportTest extends TestCase
             'transport' => $transport,
         ]);
 
-        $email = new Email();
-        $email->from('noreply@example.com');
-        $email->addTo('test@example.com');
-        $email->subject('Test subject');
-        $email->text('Test body');
+        $email = (new Email())
+            ->from('noreply@example.com')
+            ->addTo('test@example.com')
+            ->subject('Test subject')
+            ->text('Test body');
 
         $mailer->send($email);
 
