@@ -8,6 +8,10 @@ use Yii;
 /**
  * View is a email template view renderer.
  *
+ * Instance of this class will be available inside the view templates as `$this` variable.
+ *
+ * This class uses the custom view renderer, if it is set at the application level.
+ *
  * @property string $viewPath the root directory of view files. Defaults to 'views/mail' under the application base path.
  * @property \IViewRenderer|\CViewRenderer|array|string|null|false $viewRenderer view renderer or its array configuration.
  *
@@ -59,7 +63,7 @@ class View extends \CBaseController
 
     /**
      * Returns the view renderer - a component whose wants to replace the default view rendering logic.
-     * By default the application 'viewRenderer' component will be used, if it has been set.
+     * By default, the application 'viewRenderer' component will be used, if it has been set.
      *
      * @return \IViewRenderer|\CViewRenderer|null|false view renderer.
      */
@@ -205,7 +209,6 @@ class View extends \CBaseController
      * @param array|null $data data to be extracted into PHP variables and made available to the view script.
      * @param bool $return whether the rendering result should be returned instead of being sent to output.
      * @return string|null the rendering result. `Null` if the rendering result is not required.
-     * @throws \CException
      */
     public function renderPartial(string $view, ?array $data = null, bool $return = false)
     {

@@ -12,6 +12,39 @@ use Yii;
 use yii1tech\mailer\transport\ArrayTransport;
 
 /**
+ * Mailer allows email sending.
+ *
+ * Application configuration example:
+ *
+ * ```
+ * return [
+ *     'components' => [
+ *         'mailer' => [
+ *             'class' => yii1tech\mailer\Mailer,
+ *             'dsn' => 'smtp://user:pass@smtp.example.com:25',
+ *             'view' => [
+ *                 'layout' => 'default-layout',
+ *             ],
+ *         ],
+ *     ],
+ *     // ...
+ * ];
+ * ```
+ *
+ * Usage example:
+ *
+ * ```
+ * use Symfony\Component\Mime\Email;
+ *
+ * $email = (new Email())
+ *     ->addFrom('noreply@example.com')
+ *     ->addTo('test@example.com')
+ *     ->subject('Test subject')
+ *     ->text('Test body');
+ *
+ * Yii::app()->mailer->send($email);
+ * ```
+ *
  * @see https://symfony.com/doc/current/mailer.html
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -57,10 +90,15 @@ class Mailer extends CApplicationComponent
     /**
      * @var \yii1tech\mailer\View|array view instance or its array configuration.
      */
-    private $_view = [
-        'class' => View::class,
-    ];
+    private $_view = [];
 
+    /**
+     * Sends the given message.
+     *
+     * @param \Symfony\Component\Mime\RawMessage|\Symfony\Component\Mime\Email|\yii1tech\mailer\TemplatedEmailContract $message message to be sent.
+     * @param \Symfony\Component\Mailer\Envelope|null $envelope envelope instance.
+     * @return void
+     */
     public function send(RawMessage $message, ?Envelope $envelope = null): void
     {
         foreach ($this->defaultHeaders as $name => $value) {
@@ -160,7 +198,12 @@ class Mailer extends CApplicationComponent
     public function getView()
     {
         if (!is_object($this->_view)) {
-            $this->_view = Yii::createComponent($this->_view);
+            $config = $this->_view;
+            if (is_array($config) && !isset($config['class'])) {
+                $config['class'] = View::class;
+            }
+
+            $this->_view = Yii::createComponent($config);
         }
 
         return $this->_view;

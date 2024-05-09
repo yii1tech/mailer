@@ -111,7 +111,6 @@ class MailerTest extends TestCase
         $mailer = Yii::createComponent([
             'class' => Mailer::class,
             'view' => [
-                'class' => View::class,
                 'layout' => 'test-layout',
             ],
         ]);
