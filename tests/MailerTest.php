@@ -5,6 +5,7 @@ namespace yii1tech\mailer\test;
 use Symfony\Component\Mailer\Mailer as SymfonyMailer;
 use Symfony\Component\Mailer\Transport\Smtp\SmtpTransport;
 use Symfony\Component\Mailer\Transport\NullTransport;
+use Symfony\Component\Mime\Email;
 use Yii;
 use yii1tech\mailer\Mailer;
 use yii1tech\mailer\transport\ArrayTransport;
@@ -72,5 +73,33 @@ class MailerTest extends TestCase
 
         $mailer->setSymfonyMailer($symfonyMailer);
         $this->assertSame($symfonyMailer, $mailer->getSymfonyMailer());
+    }
+
+    public function testDefaultHeaders(): void
+    {
+        $transport = new ArrayTransport();
+
+        /** @var Mailer $mailer */
+        $mailer = Yii::createComponent([
+            'class' => Mailer::class,
+            'transport' => $transport,
+            'defaultHeaders' => [
+                'From' => 'My App<noreply@example.com>',
+                'Bcc' => 'test-bcc@example.com',
+            ],
+        ]);
+
+        $email = new Email();
+        $email->addTo('test@example.com');
+        $email->subject('Test subject');
+        $email->text('Test body');
+
+        $mailer->send($email);
+
+        $sentMessage = $transport->getLastSentMessage();
+
+        $this->assertSame('noreply@example.com', $sentMessage->getFrom()[0]->getAddress());
+        $this->assertSame('My App', $sentMessage->getFrom()[0]->getName());
+        $this->assertSame('test-bcc@example.com', $sentMessage->getBcc()[0]->getAddress());
     }
 }

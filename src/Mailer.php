@@ -30,9 +30,24 @@ class Mailer extends CApplicationComponent
     public $dsn;
 
     /**
+     * @var array<string, string|string[]> the default headers to be applied for each sending email.
+     * For example:
+     *
+     * ```
+     * [
+     *     'From' => 'My App<noreply@example.com>',
+     *     'Bcc' => 'test-bcc@example.com',
+     *     'X-Custom-Header' => 'foobar',
+     * ]
+     * ```
+     */
+    public $defaultHeaders = [];
+
+    /**
      * @var \Symfony\Component\Mailer\Mailer Swift mailer instance.
      */
     private $_symfonyMailer;
+
     /**
      * @var \Symfony\Component\Mailer\Transport\TransportInterface|\Closure|string|null transport instance or its class name or factory PHP callback.
      */
@@ -40,6 +55,13 @@ class Mailer extends CApplicationComponent
 
     public function send(RawMessage $message, ?Envelope $envelope = null): void
     {
+        foreach ($this->defaultHeaders as $name => $value) {
+            if (in_array(strtolower($name), ['from', 'to', 'cc', 'bcc', 'reply-to'])) {
+                $value = (array) $value;
+            }
+            $message->getHeaders()->addHeader($name, $value);
+        }
+
         $this->getSymfonyMailer()->send($message, $envelope);
     }
 
