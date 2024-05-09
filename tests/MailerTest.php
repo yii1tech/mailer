@@ -7,6 +7,7 @@ use Symfony\Component\Mailer\Transport\Smtp\SmtpTransport;
 use Symfony\Component\Mailer\Transport\NullTransport;
 use Yii;
 use yii1tech\mailer\Mailer;
+use yii1tech\mailer\transport\ArrayTransport;
 
 class MailerTest extends TestCase
 {
@@ -43,6 +44,24 @@ class MailerTest extends TestCase
         ]);
 
         $this->assertTrue($mailer->getTransport() instanceof NullTransport);
+    }
+
+    public function testCreateArrayTransport(): void
+    {
+        /** @var Mailer $mailer */
+        $mailer = Yii::createComponent([
+            'class' => Mailer::class,
+            'dsn' => 'array',
+        ]);
+
+        $this->assertTrue($mailer->getTransport() instanceof ArrayTransport);
+
+        $mailer = Yii::createComponent([
+            'class' => Mailer::class,
+            'dsn' => 'array://',
+        ]);
+
+        $this->assertTrue($mailer->getTransport() instanceof ArrayTransport);
     }
 
     public function testSetupSymfonyMailer(): void

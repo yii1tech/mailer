@@ -8,6 +8,7 @@ use Symfony\Component\Mailer\Mailer as SymfonyMailer;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\RawMessage;
+use yii1tech\mailer\transport\ArrayTransport;
 
 /**
  * @see https://symfony.com/doc/current/mailer.html
@@ -84,7 +85,11 @@ class Mailer extends CApplicationComponent
                 throw new \LogicException('Either "' . get_class($this) . '::$dsn" or "' . get_class($this) . '::$transport" property should be set.');
             }
 
-            $this->_transport = Transport::fromDsn($this->dsn);
+            if ($this->dsn === 'array' || stripos($this->dsn, 'array://') !== false) {
+                $this->_transport = new ArrayTransport();
+            } else {
+                $this->_transport = Transport::fromDsn($this->dsn);
+            }
 
             return $this->_transport;
         }
