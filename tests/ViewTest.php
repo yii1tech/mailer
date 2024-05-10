@@ -69,8 +69,10 @@ class ViewTest extends TestCase
         $this->assertStringContainsString('Locale = ru', $content);
         $this->assertStringContainsString('<!--Header-->', $content);
         $this->assertStringContainsString('<!--Footer-->', $content);
+        $this->assertStringContainsString('Clip = Test Clip Content', $content);
 
         $this->assertSame('default-layout', $view->layout);
         $this->assertSame('en_us', Yii::app()->getLanguage());
+        $this->assertCount(0, $view->getClips());
     }
 }

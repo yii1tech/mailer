@@ -3,7 +3,9 @@
 namespace yii1tech\mailer;
 
 use CFileHelper;
+use CMap;
 use Yii;
+use yii1tech\mailer\widgets\ClipWidget;
 
 /**
  * View is a email template view renderer.
@@ -14,6 +16,7 @@ use Yii;
  *
  * @property string $viewPath the root directory of view files. Defaults to 'views/mail' under the application base path.
  * @property \IViewRenderer|\CViewRenderer|array|string|null|false $viewRenderer view renderer or its array configuration.
+ * @property \CMap $clips The list of clips.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
@@ -37,6 +40,12 @@ class View extends \CBaseController
      * @var \IViewRenderer|\CViewRenderer|array|string|null|false view renderer or its array configuration.
      */
     private $_viewRenderer;
+
+    /**
+     * @var \CMap|null list of clips.
+     * @see \CClipWidget
+     */
+    private $_clips;
 
     /**
      * @return string the root directory of view files. Defaults to 'views/mail' under the application base path.
@@ -178,6 +187,8 @@ class View extends \CBaseController
                 $content = $this->renderPartial($this->layout, ['content' => $content], true);
             }
         } catch (\Throwable $e) {
+            throw $e;
+        } finally {
             while (ob_get_level() > $obInitialLevel) {
                 if (!@ob_end_clean()) {
                     ob_clean();
@@ -185,13 +196,9 @@ class View extends \CBaseController
             }
 
             $this->layout = $originalLayout;
+            $this->_clips = null;
             Yii::app()->setLanguage($originalLocale);
-
-            throw $e;
         }
-
-        $this->layout = $originalLayout;
-        Yii::app()->setLanguage($originalLocale);
 
         return $content;
     }
@@ -219,5 +226,45 @@ class View extends \CBaseController
         }
 
         return $this->renderFile($viewFile, $data, $return);
+    }
+
+    /**
+     * Returns the list of clips.
+     * A clip is a named piece of rendering result that can be inserted at different places.
+     *
+     * @see \yii1tech\mailer\widgets\ClipWidget
+     *
+     * @return \CMap the list of clips
+     */
+    public function getClips(): CMap
+    {
+        if ($this->_clips === null) {
+            $this->_clips = new CMap();
+        }
+
+        return $this->_clips;
+    }
+
+    /**
+     * Begins recording a clip.
+     * This method is a shortcut to beginning {@see \yii1tech\mailer\widgets\ClipWidget}.
+     *
+     * @param string $id the clip ID.
+     * @param array $properties initial property values for {@see \yii1tech\mailer\widgets\ClipWidget}.
+     */
+    public function beginClip($id, $properties = []): void
+    {
+        $properties['id'] = $id;
+        $properties['view'] = $this;
+        $this->beginWidget(ClipWidget::class, $properties);
+    }
+
+    /**
+     * Ends recording a clip.
+     * This method is an alias to {@see endWidget()}.
+     */
+    public function endClip(): void
+    {
+        $this->endWidget(ClipWidget::class);
     }
 }
