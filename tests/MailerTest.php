@@ -54,13 +54,6 @@ class MailerTest extends TestCase
         /** @var Mailer $mailer */
         $mailer = Yii::createComponent([
             'class' => Mailer::class,
-            'dsn' => 'array',
-        ]);
-
-        $this->assertTrue($mailer->getTransport() instanceof ArrayTransport);
-
-        $mailer = Yii::createComponent([
-            'class' => Mailer::class,
             'dsn' => 'array://',
         ]);
 

@@ -157,7 +157,7 @@ class Mailer extends CApplicationComponent
                 throw new \LogicException('Either "' . get_class($this) . '::$dsn" or "' . get_class($this) . '::$transport" property should be set.');
             }
 
-            if ($this->dsn === 'array' || stripos($this->dsn, 'array://') !== false) {
+            if ($this->dsn === 'array://') {
                 $this->_transport = new ArrayTransport();
             } else {
                 $this->_transport = Transport::fromDsn($this->dsn);

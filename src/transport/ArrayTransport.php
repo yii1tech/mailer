@@ -11,7 +11,7 @@ use Symfony\Component\Mime\RawMessage;
  *
  * This transport can be useful while writing unit tests.
  *
- * In {@see \yii1tech\mailer\Mailer::getTransport()} this transport will be created for DSN 'array' or 'array://'.
+ * In {@see \yii1tech\mailer\Mailer::getTransport()} this transport will be created for DSN 'array://'.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
