@@ -73,8 +73,8 @@ class Mailer extends CApplicationComponent
      *
      * ```
      * [
-     *     'From' => 'My App<noreply@example.com>',
-     *     'Bcc' => 'test-bcc@example.com',
+     *     'From' => 'My Application<noreply@example.com>',
+     *     'Bcc' => 'test-via-bcc@example.com',
      *     'X-Custom-Header' => 'foobar',
      * ]
      * ```
