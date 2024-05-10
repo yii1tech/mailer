@@ -82,6 +82,12 @@ class Mailer extends CApplicationComponent
     public $defaultHeaders = [];
 
     /**
+     * @var \Psr\Log\LoggerInterface|null PSR logger to be applied to the mail transport.
+     * @see https://github.com/yii1tech/psr-log
+     */
+    public $logger;
+
+    /**
      * @var \Symfony\Component\Mailer\Mailer Symfony mailer instance.
      */
     private $_symfonyMailer;
@@ -182,9 +188,9 @@ class Mailer extends CApplicationComponent
             }
 
             if ($this->dsn === 'array://') {
-                $this->_transport = new ArrayTransport();
+                $this->_transport = new ArrayTransport(null, $this->logger);
             } else {
-                $this->_transport = Transport::fromDsn($this->dsn);
+                $this->_transport = Transport::fromDsn($this->dsn, null, null, $this->logger);
             }
 
             return $this->_transport;
