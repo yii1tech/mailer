@@ -47,6 +47,10 @@ use yii1tech\mailer\transport\ArrayTransport;
  *
  * @see https://symfony.com/doc/current/mailer.html
  *
+ * @property \Symfony\Component\Mailer\Transport\TransportInterface|\Closure|string $transport mail transport to be used.
+ * @property \yii1tech\mailer\View|array|string $view view instance to be used for template rendering.
+ * @property \Symfony\Component\Mailer\Mailer $symfonyMailer related Symfony mailer instance.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
@@ -59,7 +63,7 @@ class Mailer extends CApplicationComponent
      * - 'smtp://user:pass@smtp.example.com:25'
      * - 'sendmail://default'
      *
-     * Note: this property will have no effect in case {@see $transport} property is explicitly set.
+     * > Note: this property will have no effect in case {@see $transport} property is explicitly set.
      */
     public $dsn;
 
@@ -78,7 +82,7 @@ class Mailer extends CApplicationComponent
     public $defaultHeaders = [];
 
     /**
-     * @var \Symfony\Component\Mailer\Mailer Swift mailer instance.
+     * @var \Symfony\Component\Mailer\Mailer Symfony mailer instance.
      */
     private $_symfonyMailer;
 
@@ -115,6 +119,14 @@ class Mailer extends CApplicationComponent
         $this->getSymfonyMailer()->send($message, $envelope);
     }
 
+    /**
+     * Sets the Symfony mailer to be used directly.
+     *
+     * Using this method makes {@see $dsn} and {@see $transport} values to be ignored.
+     *
+     * @param \Symfony\Component\Mailer\Mailer|null $symfonyMailer Symfony mailer instance.
+     * @return static self reference.
+     */
     public function setSymfonyMailer(?SymfonyMailer $symfonyMailer): self
     {
         $this->_symfonyMailer = $symfonyMailer;
@@ -122,6 +134,9 @@ class Mailer extends CApplicationComponent
         return $this;
     }
 
+    /**
+     * @return \Symfony\Component\Mailer\Mailer Symfony mailer instance.
+     */
     public function getSymfonyMailer(): SymfonyMailer
     {
         if ($this->_symfonyMailer === null) {
@@ -131,12 +146,19 @@ class Mailer extends CApplicationComponent
         return $this->_symfonyMailer;
     }
 
+    /**
+     * Creates default Symfony mailer instance with pre-configured transport.
+     *
+     * @return \Symfony\Component\Mailer\Mailer Symfony mailer instance.
+     */
     protected function createSymfonyMailer(): SymfonyMailer
     {
         return new SymfonyMailer($this->getTransport());
     }
 
     /**
+     * Sets the mail transport to be used.
+     *
      * @param \Symfony\Component\Mailer\Transport\TransportInterface|\Closure|string|null $transport transport instance or its class name or factory PHP callback.
      * @return static self reference.
      */
@@ -148,6 +170,8 @@ class Mailer extends CApplicationComponent
     }
 
     /**
+     * Returns the configured mail transport.
+     *
      * @return \Symfony\Component\Mailer\Transport\TransportInterface mail transport instance.
      */
     public function getTransport(): TransportInterface
