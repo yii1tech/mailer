@@ -20,7 +20,7 @@ use yii1tech\mailer\transport\ArrayTransport;
  * return [
  *     'components' => [
  *         'mailer' => [
- *             'class' => yii1tech\mailer\Mailer,
+ *             'class' => yii1tech\mailer\Mailer::class,
  *             'dsn' => 'smtp://user:pass@smtp.example.com:25',
  *             'view' => [
  *                 'layout' => 'default-layout',

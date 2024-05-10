@@ -47,7 +47,7 @@ Application configuration example:
 return [
     'components' => [
         'mailer' => [
-            'class' => yii1tech\mailer\Mailer,
+            'class' => yii1tech\mailer\Mailer::class,
             'dsn' => 'smtp://user:pass@smtp.example.com:25',
         ],
     ],
@@ -88,7 +88,7 @@ Application configuration example:
 return [
     'components' => [
         'mailer' => [
-            'class' => yii1tech\mailer\Mailer,
+            'class' => yii1tech\mailer\Mailer::class,
             'defaultHeaders' => [
                 'From' => 'My Application<noreply@example.com>',
                 'Bcc' => 'test-via-bcc@example.com',
@@ -137,7 +137,7 @@ Application configuration example:
 return [
     'components' => [
         'mailer' => [
-            'class' => yii1tech\mailer\Mailer,
+            'class' => yii1tech\mailer\Mailer::class,
             'view' => [
                 'viewPath' => dirname(__DIR__) . '/views/mail',
                 'layout' => 'default-layout',
@@ -162,7 +162,7 @@ Application configuration example:
 return [
     'components' => [
         'mailer' => [
-            'class' => yii1tech\mailer\Mailer,
+            'class' => yii1tech\mailer\Mailer::class,
             'dsn' => 'array://',
             // ...
         ],
