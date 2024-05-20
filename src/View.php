@@ -271,4 +271,20 @@ class View extends \CBaseController
     {
         $this->endWidget(ClipWidget::class);
     }
+
+    /**
+     * Creates an absolute URL based on the given controller and action information.
+     *
+     * @since 1.0.1
+     *
+     * @param string $route the URL route. This should be in the format of 'ControllerID/ActionID'.
+     * @param array $params additional GET parameters (name=>value). Both the name and value will be URL-encoded.
+     * @param string $schema schema to use (e.g. http, https). If empty, the schema used for the current request will be used.
+     * @param string $ampersand the token separating name-value pairs in the URL.
+     * @return string the constructed URL
+     */
+    public function createAbsoluteUrl(string $route, array $params = [], string $schema = '', string $ampersand = '&'): string
+    {
+        return Yii::app()->createAbsoluteUrl($route, $params, $schema, $ampersand);
+    }
 }

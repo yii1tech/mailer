@@ -170,6 +170,8 @@ $this->layout = 'particular-layout';
 ?>
 <h1>Greetings</h1>
 <p>Context var "name" = <?php echo CHtml::encode($name) ?></p>
+
+<a href="<?php $this->createAbsoluteUrl('mail/unsubscribe', ['email' => $_message->getTo()[0]->getAddress()]) ?>">Unsubscribe</a>
 ```
 
 
