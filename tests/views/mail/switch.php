@@ -1,6 +1,7 @@
 <?php
 /**
  * @var $this \yii1tech\mailer\View
+ * @var $name string
  */
 
 $this->layout = 'layout';

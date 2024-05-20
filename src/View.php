@@ -184,7 +184,11 @@ class View extends \CBaseController
             $content = $this->renderPartial($view, $data, true);
 
             if (!empty($this->layout)) {
-                $content = $this->renderPartial($this->layout, ['content' => $content], true);
+                $content = $this->renderPartial(
+                    $this->layout,
+                    array_merge((array) $data, ['content' => $content]),
+                    true
+                );
             }
         } catch (\Throwable $e) {
             throw $e;

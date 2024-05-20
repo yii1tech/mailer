@@ -149,6 +149,29 @@ return [
 ];
 ```
 
+Inside the template file the following variables are always accessible:
+
+- `$this` - reference to `\yii1tech\mailer\View` instance.
+- `$_message` - reference to email message instance, which is rendered.
+
+Template example:
+
+```php
+<?php
+/**
+ * @var $this \yii1tech\mailer\View
+ * @var $_message \yii1tech\mailer\TemplatedEmail
+ * @var $name string
+ */
+ 
+$_message->subject('Email subject defined within the template');
+
+$this->layout = 'particular-layout';
+?>
+<h1>Greetings</h1>
+<p>Context var "name" = <?php echo CHtml::encode($name) ?></p>
+```
+
 
 ### Writing unit tests <span id="writing-unit-tests"></span>
 

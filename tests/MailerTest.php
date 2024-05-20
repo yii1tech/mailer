@@ -122,6 +122,9 @@ class MailerTest extends TestCase
         $mailer = Yii::createComponent([
             'class' => Mailer::class,
             'transport' => $transport,
+            'view' => [
+                'layout' => 'layout',
+            ],
         ]);
 
         $email = (new TemplatedEmail())
@@ -140,5 +143,7 @@ class MailerTest extends TestCase
 
         $this->assertStringContainsString('Name = John Doe', $sentMessage->getTextBody());
         $this->assertStringContainsString('Name = John Doe', $sentMessage->getHtmlBody());
+        $this->assertStringContainsString('Subject = Test subject', $sentMessage->getHtmlBody());
+        $this->assertStringContainsString('Layout-Subject = Test subject', $sentMessage->getHtmlBody());
     }
 }

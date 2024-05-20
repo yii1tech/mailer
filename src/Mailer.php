@@ -263,13 +263,21 @@ class Mailer extends CApplicationComponent
         }
 
         if (($textTemplate = $message->getTextTemplate()) !== null) {
-            $text = $this->getView()->render($textTemplate, $message->getContext(), $message->getLocale());
+            $text = $this->getView()->render(
+                $textTemplate,
+                array_merge($message->getContext(), ['_message' => $message]),
+                $message->getLocale()
+            );
 
             $message->text($text);
         }
 
         if (($htmlTemplate = $message->getHtmlTemplate()) !== null) {
-            $html = $this->getView()->render($htmlTemplate, $message->getContext(), $message->getLocale());
+            $html = $this->getView()->render(
+                $htmlTemplate,
+                array_merge($message->getContext(), ['_message' => $message]),
+                $message->getLocale()
+            );
 
             $message->html($html);
         }
