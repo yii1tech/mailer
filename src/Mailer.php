@@ -265,7 +265,7 @@ class Mailer extends CApplicationComponent
         if (($textTemplate = $message->getTextTemplate()) !== null) {
             $text = $this->getView()->render(
                 $textTemplate,
-                array_merge($message->getContext(), ['_message' => $message]),
+                array_merge(['_message' => $message], $message->getContext()),
                 $message->getLocale()
             );
 
@@ -275,7 +275,7 @@ class Mailer extends CApplicationComponent
         if (($htmlTemplate = $message->getHtmlTemplate()) !== null) {
             $html = $this->getView()->render(
                 $htmlTemplate,
-                array_merge($message->getContext(), ['_message' => $message]),
+                array_merge(['_message' => $message], $message->getContext()),
                 $message->getLocale()
             );
 
